@@ -17,10 +17,11 @@ import javax.net.ssl.SSLContext;
 
 public class InfraCheck {
 
+//    String BASE_URL = "http://localhost:8080";
     String BASE_URL = "https://sandboxapic.cisco.com/api";
-    String APICEM_AUTH = BASE_URL + "/v1/ticket";
-    String APICEM_PATHTRACE = BASE_URL + "/v1/flow-analysis";
-//    String APICEM_AUTH = "http://localhost:8080";
+    String APICEM_AUTH = BASE_URL.concat("/v1/ticket");
+    String APICEM_PATHTRACE = BASE_URL.concat("/v1/flow-analysis");
+
 
     public HttpResponse<JsonNode> getHealth() throws java.security.NoSuchAlgorithmException,
             java.security.KeyStoreException, java.security.KeyManagementException, UnirestException {
@@ -53,7 +54,7 @@ public class InfraCheck {
     }
 
     public HttpResponse<JsonNode> pathCheck(String apicemTicket) {
-        //https://sandboxapic.cisco.com/apic/api/v1/flow-analysis/7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90
+        //https://sandboxapic.cisco.com/api/v1/flow-analysis/7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90
         try {
             SSLContext sslcontext = SSLContexts.custom()
                     .loadTrustMaterial(null, new TrustSelfSignedStrategy())
@@ -65,12 +66,11 @@ public class InfraCheck {
                     .build();
             Unirest.setHttpClient(httpclient);
 
-            HttpResponse<JsonNode> jsonResponse = Unirest.get(APICEM_PATHTRACE + "7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90")
-                    .header("Content-Type", "application/json")
+            HttpResponse<JsonNode> res = Unirest.get(APICEM_PATHTRACE + "/7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90")
                     .header("X-Auth-Token", apicemTicket)
                     .asJson();
 
-            return jsonResponse;
+            return res;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

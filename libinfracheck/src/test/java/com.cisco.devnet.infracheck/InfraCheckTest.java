@@ -7,21 +7,21 @@ import junit.framework.TestCase;
 public class InfraCheckTest extends TestCase {
 
     String TICKET;
+    InfraCheck health = new InfraCheck();
 
     protected void setUp() {
-        InfraCheck health = new InfraCheck();
         TICKET = health.login().getBody().getObject().getJSONObject("response").getString("serviceTicket");
     }
 
     public void testPathCheck() throws  Exception {
-        InfraCheck health = new InfraCheck();
         String result = health.pathCheck(TICKET)
                 .getBody()
                 .getObject()
                 .getJSONObject("response")
+                .getJSONObject("request")
                 .getString("status");
 
-        assertEquals(result, "FAILED");
+        assertEquals("FAILED", result);
 //        if (result == "FAILED") {
 //            return "{\"message\": \"failed\"}";
 //        }
