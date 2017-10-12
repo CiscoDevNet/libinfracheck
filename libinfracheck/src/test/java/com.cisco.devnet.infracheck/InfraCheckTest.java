@@ -1,18 +1,19 @@
 package com.cisco.devnet.infracheck;
 
-import com.cisco.devnet.infracheck.InfraCheck;
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.assertEquals;
 
-
-public class InfraCheckTest extends TestCase {
+public class InfraCheckTest {
 
     String TICKET;
     InfraCheck health = new InfraCheck();
 
-    protected void setUp() {
+    @Before
+    public void setUp() {
         TICKET = health.login().getBody().getObject().getJSONObject("response").getString("serviceTicket");
     }
 
+    @Test
     public void testPathCheck() throws  Exception {
         String result = health.pathCheck(TICKET)
                 .getBody()
@@ -22,9 +23,6 @@ public class InfraCheckTest extends TestCase {
                 .getString("status");
 
         assertEquals("FAILED", result);
-//        if (result == "FAILED") {
-//            return "{\"message\": \"failed\"}";
-//        }
 
     }
 
