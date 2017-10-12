@@ -18,7 +18,7 @@ From the terminal:
 
 * Navigate to `libinfracheck/`
 * Execute `mvn clean install`
-* Within the `backend`, execute `mvn clean tomcat:run`
+* Within the `backend`, execute `mvn clean tomcat7:run`
 
 From IntelliJ:
 
