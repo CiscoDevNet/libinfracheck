@@ -30,7 +30,7 @@ public class HealthService {
         try {
 
             log.info("Starting healthcheck process");
-            String token = health.login().getBody().getObject().getJSONObject("response").getString("serviceTicket");
+            String token = health.getTicket();
 
             healthObject = health.pathCheck(token);
 

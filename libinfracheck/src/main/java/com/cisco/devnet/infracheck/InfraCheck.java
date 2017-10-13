@@ -24,12 +24,7 @@ public class InfraCheck {
     String APICEM_PATHTRACE = BASE_URL.concat("/v1/flow-analysis");
 
 
-    public HttpResponse<JsonNode> getHealth() throws java.security.NoSuchAlgorithmException,
-            java.security.KeyStoreException, java.security.KeyManagementException, UnirestException {
-        return login();
-    }
-
-    public HttpResponse<JsonNode> login() {
+    public String getTicket() {
 
         log.info("Logging into APIC-EM: ".concat(BASE_URL));
 
@@ -50,17 +45,28 @@ public class InfraCheck {
                     .body("{\"username\": \"devnetuser\", \"password\": \"Cisco123!\"}")
                     .asJson();
 
+            String ticket = jsonResponse
+                    .getBody()
+                    .getObject()
+                    .getJSONObject("response")
+                    .getString("serviceTicket");
+
             log.info("Received login token!");
-            return jsonResponse;
+            return ticket;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public HttpResponse<JsonNode> pathCheck(String apicemTicket) {
+        return pathCheck(apicemTicket, "7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90");
+    }
+
+    public HttpResponse<JsonNode> pathCheck(String apicemTicket, String pathId) {
         //https://sandboxapic.cisco.com/api/v1/flow-analysis/7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90
         log.info("Starting path trace");
         log.info("API: ".concat(APICEM_PATHTRACE));
+
         try {
             SSLContext sslcontext = SSLContexts.custom()
                     .loadTrustMaterial(null, new TrustSelfSignedStrategy())
@@ -72,7 +78,7 @@ public class InfraCheck {
                     .build();
             Unirest.setHttpClient(httpclient);
 
-            HttpResponse<JsonNode> res = Unirest.get(APICEM_PATHTRACE + "/7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90")
+            HttpResponse<JsonNode> res = Unirest.get(APICEM_PATHTRACE.concat("/").concat(pathId))
                     .header("X-Auth-Token", apicemTicket)
                     .asJson();
 
