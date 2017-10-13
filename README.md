@@ -57,7 +57,7 @@ InfraCheck exposes two APIs:
 
 `getTicket()` which returns a String object token from APIC-EM
 
-`pathCheck(token)` which returns an HttpResponse<JsonNode>. Use the [Unirest](http://unirest.io) functions to navigate the JSON object that is returned.  For example, `.getBody().getObject().getJSONObject("response").getJSONObject("request).getString("status");`.
+`pathCheck(token)` which returns an `HttpResponse<JsonNode>`. Use the [Unirest](http://unirest.io) functions to navigate the JSON object that is returned.  For example, `.getBody().getObject().getJSONObject("response").getJSONObject("request).getString("status");`.
 
 Example:
 ```java
