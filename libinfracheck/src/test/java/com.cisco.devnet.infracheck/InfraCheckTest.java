@@ -1,7 +1,10 @@
 package com.cisco.devnet.infracheck;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import org.junit.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class InfraCheckTest {
 
@@ -37,6 +40,20 @@ public class InfraCheckTest {
 
         assertEquals("FAILED", result);
 
+    }
+
+    @Test
+    public void testCreatePathTrace() throws Exception {
+
+
+        HttpResponse<JsonNode> response = health.createPathTrace(TICKET,"192.168.1.128", "192.168.1.169");
+
+        String result = response.getBody()
+                .getObject()
+                .getJSONObject("response")
+                .getString("url");
+
+        assertNotEquals(null, result);
     }
 
 
