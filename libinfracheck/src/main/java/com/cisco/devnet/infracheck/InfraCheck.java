@@ -124,11 +124,15 @@ public class InfraCheck {
     */
 
     /**
+     *  Returns a path trace ID
+     *  For more information: https://sandboxapic.cisco.com/swagger#!/flow-analysis/initiateFlowAnalysis
      *
-     * @param apicemTicket
-     * @param sourceIp
-     * @param destIp
+     * @param apicemTicket API Ticket that is received from the login() method
+     * @param sourceIp the Source IP to start the trace from
+     * @param destIp the Destination IP for the trace to stop
      * @return
+     *
+     *  HttpResponse&lt;JsonNode&gt; containing the ID of the path trace created
      */
     public HttpResponse<JsonNode> createPathTrace(String apicemTicket, String sourceIp, String destIp) {
 
