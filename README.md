@@ -4,12 +4,14 @@ This project demonstrates using network infrastructure as part of a healthcheck 
 
 In this project, there are two separate modules:
 
-* backend: A Jersey-based web service
+* backend: A Jersey-based web service (Spring Boot Example below is preferred)
 * libinfracheck: A Java library that can will check the health of infrastructure using APIC-EM Path Trace
 
 # Spring Boot Example
 
 A [spring-boot example](https://wwwin-github.cisco.com/asroach/infracheck-spring-boot) is available.
+
+This example is preferred to the Jersey example above.
 
 # libinfracheck
 
