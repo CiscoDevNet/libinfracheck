@@ -54,6 +54,8 @@ Instantiate a new InfraCheck object:
 
 InfraCheck exposes two APIs:
 
+`setConfig()` which requires the URL for your APIC-EM API root
+
 `getTicket()` which returns a String object token from APIC-EM
 
 `pathCheck(token)` which returns an `HttpResponse<JsonNode>`. Use the [Unirest](http://unirest.io) functions to navigate the JSON object that is returned.  For example, `.getBody().getObject().getJSONObject("response").getJSONObject("request).getString("status");`.
@@ -65,8 +67,8 @@ Example:
         InfraCheck health = new InfraCheck();
 
         try {
-
-            String token = health.getTicket();
+            health.setConfig("https://sandboxapicem.cisco.com/api");
+            String token = health.getTicket("devnetuser", "Cisco123!");
 
             healthObject = health.pathCheck(token);
 
