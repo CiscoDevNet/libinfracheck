@@ -9,7 +9,7 @@
 
 # Spring Boot Usage Example
 
-A [spring-boot example](https://wwwin-github.cisco.com/asroach/infracheck-spring-boot) is available.
+A [spring-boot example](https://github.com/ciscodevnet/infraspringboot) is available.
 
 
 # High level flow
