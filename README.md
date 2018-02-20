@@ -91,7 +91,7 @@ If you have questions, concerns, bug reports, etc, please file an issue in this 
 
 ## Getting involved
 
-* If you'd like to make contributions, feel free to make a request in the issue tracker.  If you're interested in creating a Cisco DevNet Learning Lab, contact Ashley Roach (asroach at cisco.com).
+* If you'd like to make contributions, feel free to make a request in the issue tracker.  If you have other questions, contact Ashley Roach (asroach at cisco.com).
 
 ## Credits and references
 
