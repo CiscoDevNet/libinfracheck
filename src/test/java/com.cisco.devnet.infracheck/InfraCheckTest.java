@@ -13,7 +13,8 @@ public class InfraCheckTest {
 
     @Before
     public void setUp() {
-        TICKET = String.valueOf(health.getTicket());
+        health.setConfig("https://sandboxapicem.cisco.com/api");
+        TICKET = String.valueOf(health.getTicket("devnetuser", "Cisco123!"));
     }
 
 //    @Test
@@ -31,7 +32,7 @@ public class InfraCheckTest {
 
     @Test
     public void testOptionalPathCheck() throws  Exception {
-        String result = health.pathCheck(TICKET, "3772b101-6769-4dd7-9fbf-cdd45d8971ea")
+        String result = health.pathCheck(TICKET, "83146cfe-44f1-4445-94e7-87c6327490c8")
                 .getBody()
                 .getObject()
                 .getJSONObject("response")

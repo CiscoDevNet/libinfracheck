@@ -8,6 +8,7 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
+import org.json.JSONObject;
 
 import javax.net.ssl.SSLContext;
 import java.util.logging.Logger;
@@ -16,16 +17,28 @@ public class InfraCheck {
 
     private static final Logger log = Logger.getLogger(InfraCheck.class.getName());
 
+    private String BASE_URL;
+    private String APICEM_AUTH;
+    private String APICEM_PATHTRACE;
 
-//    String BASE_URL = "http://localhost:8080";
-    String BASE_URL = "https://sandboxapic.cisco.com/api";
-    String APICEM_AUTH = BASE_URL.concat("/v1/ticket");
-    String APICEM_PATHTRACE = BASE_URL.concat("/v1/flow-analysis");
+    public void setConfig(String url) {
 
+        if (!url.isEmpty() && url != null ) {
+            this.BASE_URL = url;
+            APICEM_AUTH = BASE_URL.concat("/v1/ticket");
+            APICEM_PATHTRACE = BASE_URL.concat("/v1/flow-analysis");
+        } else {
+            throw new IllegalArgumentException("url must not be empty");
+        }
 
-    public String getTicket() {
+    }
+
+    public String getTicket(String username, String password) {
 
         log.info("Logging into APIC-EM: ".concat(BASE_URL));
+        log.info("Credentials: ");
+        log.info("Username: ".concat(username));
+        log.info("Password: ".concat(password));
 
         try {
             SSLContext sslcontext = SSLContexts.custom()
@@ -38,10 +51,13 @@ public class InfraCheck {
                     .build();
             Unirest.setHttpClient(httpclient);
 
+            JSONObject jsonLogin = new JSONObject();
+            jsonLogin.put("username", username);
+            jsonLogin.put("password", password);
 
             HttpResponse<JsonNode> jsonResponse = Unirest.post(APICEM_AUTH)
                     .header("Content-Type", "application/json")
-                    .body("{\"username\": \"devnetuser\", \"password\": \"Cisco123!\"}")
+                    .body(jsonLogin.toString())
                     .asJson();
 
             String ticket = jsonResponse
