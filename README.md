@@ -1,8 +1,8 @@
 # libinfracheck
 
-**Description**: This project demonstrates using network infrastructure as part of a healthcheck for an application.  The implementation here is a a Java library that can check the health of infrastructure using APIC-EM Path Trace.
+**Description**: This project demonstrates using network infrastructure as part of a healthcheck for an application.  The implementation here is a a Java library that can check the health of infrastructure using Path Trace.
 
-This project is also an example of "infrastructure intent".  That is, the business requirement of application reliability can be assessed, in part, through APIC-EM or DNA Center controllers' information about network devices and routes.  This project can be extended and tailored to meet additional business requirements and interact with other systems to contribute to a perspective on overall system health.  
+This project is also an example of "infrastructure intent".  That is, the business requirement of application reliability can be assessed, in part, through DNA Center's information about network devices and routes.  This project can be extended and tailored to meet additional business requirements and interact with other systems to contribute to a perspective on overall system health.  
 
 ## Dependencies
 
@@ -16,7 +16,7 @@ A [spring-boot example](https://github.com/ciscodevnet/infraspringboot) is avail
 
 # High level flow
 
-After authenticating and receiving a "service ticket", the library will determine network health using the `/api/v1/flow-analysis/` API from APIC-EM 1.3.
+After authenticating and receiving a "service ticket", the library will determine network health using the `/api/v1/flow-analysis/` API.
 
 # Installation
 
@@ -55,9 +55,9 @@ Instantiate a new InfraCheck object:
 
 InfraCheck exposes two APIs:
 
-`setConfig()` which requires the URL for your APIC-EM API root
+`setConfig()` which requires the URL for your API root
 
-`getTicket()` which returns a String object token from APIC-EM
+`getTicket()` which returns a String object token from the Path Trace API
 
 `pathCheck(token)` which returns an `HttpResponse<JsonNode>`. Use the [Unirest](http://unirest.io) functions to navigate the JSON object that is returned.  For example, `.getBody().getObject().getJSONObject("response").getJSONObject("request).getString("status");`.
 
@@ -96,6 +96,5 @@ If you have questions, concerns, bug reports, etc, please file an issue in this 
 
 ## Credits and references
 
-* APIC-EM API:  https://developer.cisco.com/site/apic-em/
 * Cisco DNA Center API: https://developer.cisco.com/site/dna-center/
 * DevNet Sandbox: https://devnetsandbox.cisco.com
