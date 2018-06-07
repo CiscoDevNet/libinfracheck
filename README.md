@@ -2,6 +2,8 @@
 
 **Description**: This project demonstrates using network infrastructure as part of a healthcheck for an application.  The implementation here is a a Java library that can check the health of infrastructure using APIC-EM Path Trace.
 
+This project is also an example of "infrastructure intent".  That is, the business requirement of application reliability can be assessed, in part, through APIC-EM or DNA Center controllers' information about network devices and routes.  This project can be extended and tailored to meet additional business requirements and interact with other systems to contribute to a perspective on overall system health.  
+
 ## Dependencies
 
 * Java 1.6+
@@ -15,7 +17,6 @@ A [spring-boot example](https://github.com/ciscodevnet/infraspringboot) is avail
 # High level flow
 
 After authenticating and receiving a "service ticket", the library will determine network health using the `/api/v1/flow-analysis/` API from APIC-EM 1.3.
-
 
 # Installation
 
