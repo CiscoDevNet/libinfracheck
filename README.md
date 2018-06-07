@@ -7,7 +7,7 @@ This project is also an example of "infrastructure intent".  That is, the busine
 ## Dependencies
 
 * Java 1.6+
-* Maven
+* Maven or Gradle
 
 # Spring Boot Usage Example
 
