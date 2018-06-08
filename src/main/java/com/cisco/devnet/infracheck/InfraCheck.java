@@ -9,6 +9,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.json.JSONObject;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.SSLContext;
 import java.util.logging.Logger;
@@ -18,15 +19,15 @@ public class InfraCheck {
     private static final Logger log = Logger.getLogger(InfraCheck.class.getName());
 
     private String BASE_URL;
-    private String APICEM_AUTH;
-    private String APICEM_PATHTRACE;
+    private String DNAC_AUTH;
+    private String DNAC_PATHTRACE;
 
     public void setConfig(String url) {
 
         if (!url.isEmpty() && url != null ) {
             this.BASE_URL = url;
-            APICEM_AUTH = BASE_URL.concat("/v1/ticket");
-            APICEM_PATHTRACE = BASE_URL.concat("/v1/flow-analysis");
+            DNAC_AUTH = BASE_URL.concat("/system/v1/auth/token");
+            DNAC_PATHTRACE = BASE_URL.concat("/v1/flow-analysis");
         } else {
             throw new IllegalArgumentException("url must not be empty");
         }
@@ -35,7 +36,7 @@ public class InfraCheck {
 
     public String getTicket(String username, String password) {
 
-        log.info("Logging into APIC-EM: ".concat(BASE_URL));
+        log.info("Logging into server: ".concat(BASE_URL));
         log.info("Credentials: ");
         log.info("Username: ".concat(username));
         log.info("Password: ".concat(password));
@@ -51,44 +52,48 @@ public class InfraCheck {
                     .build();
             Unirest.setHttpClient(httpclient);
 
-            JSONObject jsonLogin = new JSONObject();
-            jsonLogin.put("username", username);
-            jsonLogin.put("password", password);
+//            JSONObject jsonLogin = new JSONObject();
+//            jsonLogin.put("username", username);
+//            jsonLogin.put("password", password);
 
-            HttpResponse<JsonNode> jsonResponse = Unirest.post(APICEM_AUTH)
-                    .header("Content-Type", "application/json")
-                    .body(jsonLogin.toString())
+            String authHeader = username.concat(":" + password);
+            byte[] encodedBasic = Base64.encodeBase64(authHeader.getBytes());
+            String basicAuth = new String(encodedBasic);
+            log.info("encodedBasic: ".concat(basicAuth));
+
+            HttpResponse<JsonNode> jsonResponse = Unirest.post(DNAC_AUTH)
+                    .header("Authorization", "Basic ".concat(basicAuth))
                     .asJson();
 
-            String ticket = jsonResponse
+            JSONObject obj = jsonResponse
                     .getBody()
-                    .getObject()
-                    .getJSONObject("response")
-                    .getString("serviceTicket");
+                    .getObject();
 
-            log.info("Received login token!");
-            return ticket;
+            String token = obj.getString("Token");
+
+            log.info("Received login token!".concat(token));
+            return token;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public HttpResponse<JsonNode> pathCheck(String apicemTicket) {
-        return pathCheck(apicemTicket, "7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90");
+    public HttpResponse<JsonNode> pathCheck(String token) {
+        return pathCheck(token, "7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90");
     }
 
     /**
      * Returns the response from the /flow-analysis endpoint.
      *
-     * @param apicemTicket the APIC-EM authentication ticket
+     * @param token the DNAC authentication ticket
      * @param pathId the ID that represents the path trace (not the taskId)
      * @return
      * HttpResponse&lt;JsonNode&gt;
      */
-    public HttpResponse<JsonNode> pathCheck(String apicemTicket, String pathId) {
+    public HttpResponse<JsonNode> pathCheck(String token, String pathId) {
         //https://sandboxapic.cisco.com/api/v1/flow-analysis/7ce5d5e4-98f3-4ae3-ba90-b3d81502fb90
         log.info("Starting path trace");
-        log.info("API: ".concat(APICEM_PATHTRACE));
+        log.info("API: ".concat(DNAC_PATHTRACE));
 
         try {
             SSLContext sslcontext = SSLContexts.custom()
@@ -101,12 +106,12 @@ public class InfraCheck {
                     .build();
             Unirest.setHttpClient(httpclient);
 
-            HttpResponse<JsonNode> res = Unirest.get(APICEM_PATHTRACE.concat("/").concat(pathId))
-                    .header("X-Auth-Token", apicemTicket)
+            HttpResponse<JsonNode> res = Unirest.get(DNAC_PATHTRACE.concat("/").concat(pathId))
+                    .header("X-Auth-Token", token)
                     .asJson();
 
             log.info("Finished path trace request!");
-            log.info("Returning result from APIC-EM");
+            log.info("Returning result from DNAC");
             return res;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -143,17 +148,17 @@ public class InfraCheck {
      *  Returns a path trace ID
      *  For more information: https://sandboxapic.cisco.com/swagger#!/flow-analysis/initiateFlowAnalysis
      *
-     * @param apicemTicket API Ticket that is received from the login() method
+     * @param token API Ticket that is received from the login() method
      * @param sourceIp the Source IP to start the trace from
      * @param destIp the Destination IP for the trace to stop
      * @return
      *
      *  HttpResponse&lt;JsonNode&gt; containing the ID of the path trace created
      */
-    public HttpResponse<JsonNode> createPathTrace(String apicemTicket, String sourceIp, String destIp) {
+    public HttpResponse<JsonNode> createPathTrace(String token, String sourceIp, String destIp) {
 
         log.info("Starting create path trace");
-        log.info("API: ".concat(APICEM_PATHTRACE));
+        log.info("API: ".concat(DNAC_PATHTRACE));
 
         try {
             SSLContext sslcontext = SSLContexts.custom()
@@ -169,8 +174,8 @@ public class InfraCheck {
             String json = "{\"sourceIP\":\"" + sourceIp + "\","
                     + "\"destIP\":\"" + destIp + "\"}";
 
-            HttpResponse<JsonNode> res = Unirest.post(APICEM_PATHTRACE)
-                    .header("X-Auth-Token", apicemTicket)
+            HttpResponse<JsonNode> res = Unirest.post(DNAC_PATHTRACE)
+                    .header("X-Auth-Token", token)
                     .header("Content-Type", "application/json")
                     .body(json)
                     .asJson();

@@ -13,8 +13,8 @@ public class InfraCheckTest {
 
     @Before
     public void setUp() {
-        health.setConfig("https://sandboxapicem.cisco.com/api");
-        TICKET = String.valueOf(health.getTicket("devnetuser", "Cisco123!"));
+        health.setConfig("https://192.168.139.73/api");
+        TICKET = String.valueOf(health.getTicket("admin", "Cisco123"));
     }
 
 //    @Test
