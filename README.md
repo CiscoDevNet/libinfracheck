@@ -96,7 +96,7 @@ Example:
 
 ## Known issues
 
-* None
+* If you are running against a server with a self-signed certificate, you will need to add that certificate to the Java truststore (see https://stackoverflow.com/questions/9619030/resolving-javax-net-ssl-sslhandshakeexception-sun-security-validator-validatore?rq=1)
 
 ## Getting help
 
