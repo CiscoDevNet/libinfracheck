@@ -25,6 +25,21 @@ From the terminal:
 * Navigate to `libinfracheck/`
 * Execute `mvn clean install`
 
+## Creating a "flow analysis"
+
+You must have an existing flow analysis ID to be used in the project.  
+
+To create one, you may use the `createPathTrace` API in this project, or simply use cURL or another HTTP client like Postman.
+
+```
+curl -X POST \
+  https://192.168.139.73/api/v1/flow-analysis \
+  -H 'Cache-Control: no-cache' \
+  -H 'Content-Type: application/json' \
+  -H 'x-auth-token: '<insert your auth token here>' \
+  -d '{ "sourceIP": "10.10.22.98", "destIP": "10.10.22.114"}'
+```
+
 
 ## Using libinfracheck in another project
 
@@ -53,7 +68,7 @@ Instantiate a new InfraCheck object:
     InfraCheck health = new InfraCheck();
 ```
 
-InfraCheck exposes two APIs:
+InfraCheck exposes several APIs:
 
 `setConfig()` which requires the URL for your API root
 

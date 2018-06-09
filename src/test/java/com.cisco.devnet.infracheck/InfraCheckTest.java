@@ -32,7 +32,7 @@ public class InfraCheckTest {
 
     @Test
     public void testOptionalPathCheck() throws  Exception {
-        String result = health.pathCheck(TICKET, "83146cfe-44f1-4445-94e7-87c6327490c8")
+        String result = health.pathCheck(TICKET, "760b0560-1da2-42dc-8bc3-5d7a48a71150")
                 .getBody()
                 .getObject()
                 .getJSONObject("response")
