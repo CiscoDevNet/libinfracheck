@@ -79,19 +79,16 @@ InfraCheck exposes several APIs:
 Example:
 ```java
 
-        HttpResponse<JsonNode> healthObject;
-        InfraCheck health = new InfraCheck();
+        infraCheck.setConfig(url);
+        String ticket = infraCheck.getTicket(username, password);
+        HttpResponse<JsonNode> response = infraCheck.pathCheck(ticket, traceId);
 
-        try {
-            health.setConfig("https://sandboxapicem.cisco.com/api");
-            String token = health.getTicket("devnetuser", "Cisco123!");
-
-            healthObject = health.pathCheck(token);
-
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String healthStatus = response
+                .getBody()
+                .getObject()
+                .getJSONObject("response")
+                .getJSONObject("request")
+                .getString("status");
 ```
 
 ## Known issues
